@@ -1,0 +1,18 @@
+<script>
+(function () {
+  function resizeMermaidSVGs() {
+    document.querySelectorAll('svg.mermaid-js').forEach(function (svg) {
+      svg.removeAttribute('width');
+      svg.removeAttribute('height');
+      svg.style.removeProperty('max-width');
+      svg.setAttribute('width', '100%');
+      svg.style.height = 'auto';
+    });
+  }
+  window.addEventListener('load', function () {
+    setTimeout(resizeMermaidSVGs, 100);
+    setTimeout(resizeMermaidSVGs, 500);
+    setTimeout(resizeMermaidSVGs, 1500);
+  });
+})();
+</script>

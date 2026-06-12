@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
+/*-- scss:defaults --*/
+$font-family-sans-serif: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+$font-family-monospace: 'Fira Code', monospace;
+$presentation-font-size-root: 34px;
+$presentation-h1-font-size: 1.9em;
+$presentation-h2-font-size: 1.4em;
+$presentation-title-slide-text-align: "left";
+$body-color: #2c3e50;
+$link-color: #005EB8;
+$presentation-heading-color: #005EB8;
+$presentation-heading-font-weight: 600;
+$background-color: #fafafa;
+$dark-bg-text-color: #f0f4f8;
+$dark-bg-link-color: #f0f4f8;
+$dark-bg-code-color: #f0f4f8;
+$code-block-font-size: 0.7em;
+
+/*-- scss:rules --*/
+
+// RevealJS automatically adds .has-dark-background when background-color is dark,
+// which makes heading text white — no extra rules needed for section title cards.
+
+.reveal h1 {
+  border-bottom: 3px solid #005EB8;
+  padding-bottom: 0.2em;
+}
+
+.has-dark-background h1 {
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+
+.reveal table {
+  font-size: 0.8em;
+}
+
+.reveal table thead th {
+  border-bottom: 2px solid #005EB8;
+}
+
+.reveal table th,
+.reveal table td {
+  font-feature-settings: "ss01" 1;
+}
+
+.reveal li {
+  font-size: 0.73em;
+  font-feature-settings: "ss01" 1;
+}
+
+.reveal li li,
+li li li {
+  font-size: 1.65rem;
+  font-feature-settings: "ss01" 1;
+}
+
+.reveal li > code,
+li li > code,
+li li li > code {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.5rem;
+}
+
+.reveal code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8em;
+}
+
+.reveal pre code {
+  font-weight: 300;
+}
+
+.reveal blockquote {
+  border-left: 4px solid #005EB8;
+  padding-left: 1em;
+  font-style: normal;
+  color: #555;
+}
+
+// Quarto moves mermaid SVGs out of pre.mermaid and gives them class mermaid-js
+.reveal figure {
+  display: block !important;
+  width: 100%;
+  margin: 0;
+}
+
+.reveal svg.mermaid-js {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 60vh;
+  height: auto !important;
+}
+
+.footer p {
+  color: #a0a0a0;
+}
+
+.reveal .progress {
+  background: rgba(0, 0, 0, 0.15);
+  color: #a0aab4;
+}
+
+.small {
+  font-size: 0.75em;
+  font-feature-settings: "ss01" 1;
+}
+
+.reveal .nn-layout {
+  display: grid;
+  grid-template-columns: 38% 62%;
+  align-items: center;
+  height: 85%;
+}
+
+.reveal .nn-layout svg.mermaid-js {
+  max-height: 48vh;
+}

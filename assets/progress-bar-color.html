@@ -1,0 +1,21 @@
+<script>
+(function () {
+  var LIGHT_COLOR = '#005EB8';
+  var DARK_COLOR = 'rgba(255, 255, 255, 0.4)';
+
+  function updateProgressColor(currentSlide) {
+    var span = document.querySelector('.reveal .progress span');
+    if (!span) return;
+    var isDark = currentSlide && currentSlide.classList.contains('has-dark-background');
+    span.style.backgroundColor = isDark ? DARK_COLOR : LIGHT_COLOR;
+  }
+
+  window.addEventListener('load', function () {
+    if (!window.Reveal) return;
+    Reveal.on('slidechanged', function (event) {
+      updateProgressColor(event.currentSlide);
+    });
+    updateProgressColor(Reveal.getCurrentSlide());
+  });
+})();
+</script>
