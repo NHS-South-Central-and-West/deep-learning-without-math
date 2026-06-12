@@ -1,0 +1,364 @@
+---
+title: "Deep Learning Without Math"
+subtitle: "The Bigger Picture"
+footer: "Deep Learning: The Bigger Picture"
+---
+
+# Why Deep Learning? {background-color="#1a252f"}
+
+## A Step Change {.center}
+
+- In traditional machine learning, humans design the features the model uses
+- In deep learning, **the model learns which features matter directly from data**
+
+> The gap closed in 2012: one model changed the trajectory of an entire field.
+
+::: notes
+- In 2012, AlexNet entered the ImageNet competition and cut the top-5 error rate nearly in half
+- Not an incremental improvement — a signal that the rules had changed
+- Given enough data and compute, networks can learn to see in ways that surpass hand-crafted approaches
+- Every image recognition system today traces a line back to this moment
+:::
+
+## ImageNet Error Rates {.center}
+
+| Year | Model | Top-5 Error |
+|------|-------|-------------|
+| 2010 | NEC-UIUC | 28.2% |
+| 2011 | XRCE | 25.8% |
+| **2012** | **AlexNet** | **15.3%** |
+| 2014 | VGGNet | 7.3% |
+| 2015 | ResNet | 3.6% |
+
+> The step change happened in 2012, and has not stopped since.
+
+::: notes
+- 2010–2011: modest, incremental gains, the kind researchers expected
+- 2012: AlexNet nearly halves the error rate in a single year
+- 2015: ResNet reaches 3.6%, better than most humans on this task
+- Once the approach was validated, progress accelerated rapidly and has continued to do so
+:::
+
+# The Neuron {background-color="#1a252f"}
+
+## The Building Block {.center}
+
+```{mermaid}
+graph LR
+  x1["x1 (input 1)"] -->|"x w1"| S["sum"]
+  x2["x2 (input 2)"] -->|"x w2"| S
+  x3["x3 (input 3)"] -->|"x w3"| S
+  S --> A["activation function"]
+  A --> out["output"]
+```
+
+- Takes in several inputs
+- Multiplies each by a **weight** (its importance)
+- Passes the weighted sum through an activation function
+
+::: notes
+- A neuron takes several inputs, multiplies each by a weight (its importance), and sums them up
+- The weighted sum passes through an activation function — output is a single number
+- This is the building block; everything in deep learning is built from variations on this
+- The maths matters more than the biological metaphor
+:::
+
+## Weights Are the Memory {.center}
+
+| Input | Weight | Interpretation |
+|-------|--------|----------------|
+| Bright region near disc | 0.9 | Strongly relevant |
+| Overall image brightness | 0.1 | Weakly relevant |
+| Background noise | 0.01 | Almost irrelevant |
+
+- The weights are **learned** during training, they start random
+- A high weight: "this input matters for this decision"
+- **The network's knowledge lives entirely in its weights**
+
+::: notes
+- Before training, weights are random, the network knows nothing
+- After training, weights encode what the network has discovered about inputs and outputs
+- "Learning" means weights have settled into values that produce good predictions
+- The weights are the model — save the weights, save everything the network knows
+:::
+
+# Networks and Layers {background-color="#1a252f"}
+
+## Stacking Neurons
+
+:::: {.nn-layout}
+::: {.nn-bullets}
+- Each layer is a collection of neurons
+- Every neuron connects to every neuron in the next layer
+- Each layer passes a transformed signal forward
+:::
+```{mermaid}
+graph LR
+  subgraph Input
+    i1((i1))
+    i2((i2))
+    i3((i3))
+  end
+  subgraph Hidden
+    h1((h1))
+    h2((h2))
+    h3((h3))
+    h4((h4))
+  end
+  subgraph Output
+    o1((o1))
+    o2((o2))
+  end
+  i1 --> h1
+  i1 --> h2
+  i1 --> h3
+  i1 --> h4
+  i2 --> h1
+  i2 --> h2
+  i2 --> h3
+  i2 --> h4
+  i3 --> h1
+  i3 --> h2
+  i3 --> h3
+  i3 --> h4
+  h1 --> o1
+  h1 --> o2
+  h2 --> o1
+  h2 --> o2
+  h3 --> o1
+  h3 --> o2
+  h4 --> o1
+  h4 --> o2
+```
+::::
+
+::: notes
+- Many neurons together form a layer; stacked layers form a network
+- Each layer takes the previous layer's outputs and applies a transformation via weights and activations
+- The cascade of transformations builds progressively complex representations of the input
+:::
+
+## What Each Layer Represents {.center}
+
+| Layer | Role |
+|-------|------|
+| **Input** | Raw data — pixel values, numbers |
+| **Hidden** | Learned representations — patterns, features |
+| **Output** | The prediction — class probabilities |
+
+- Hidden layers are named because we do not directly control what they learn
+- They discover useful structure in the data on their own
+
+::: notes
+- Input layer receives raw data (for images, pixel values) no transformation applied
+- Hidden layers build progressively more abstract representations of the input
+- Output layer converts those representations into a prediction (class probabilities)
+- Called "hidden" because their representations are not directly interpretable — learned, not designed
+:::
+
+# Activation Functions {background-color="#1a252f"}
+
+## Without Activation: Just a Line {.center}
+
+- A neural network with no activation functions behaves like **one big linear equation**
+- No matter how many layers you add, the output is still a linear function of the input
+- You could replace a 100-layer network (without activations) with a single matrix multiplication
+
+::: notes
+- Without activations, stacking layers does nothing useful — each is just a linear transformation
+- The composition of linear functions is still a linear function
+- An entire deep network without activations could be collapsed to a single matrix multiplication
+- Linear functions cannot model the complex, non-linear patterns present in real data like images
+:::
+
+## Non-Linearity Unlocks Complexity {.center}
+
+```{mermaid}
+graph LR
+  sum["Weighted sum"] --> relu["ReLU:<br/>negative to 0,<br/>positive unchanged"] --> out["Output"]
+```
+
+- Activation functions introduce **non-linearity** after each weighted sum
+- The most common today: **ReLU** — simple, effective, fast
+- With non-linearity, stacked layers can model functions of arbitrary complexity
+
+::: notes
+- ReLU returns zero for negative inputs, passes positive inputs through unchanged
+- Simple but enormously effective, the output is not a linear function of the input
+- Non-linearity means stacking more layers genuinely increases what the network can model
+:::
+
+# The Forward Pass {background-color="#1a252f"}
+
+## How a Prediction is Made {.center}
+
+```{mermaid}
+graph LR
+  A["Pixel values"] --> B["Layer 1: simple patterns"] --> C["Layer 2: complex patterns"] --> D["Layer 3: task features"] --> E["0.87 disease / 0.13 healthy"]
+```
+
+- Data enters at the input layer and flows **forward** through each layer
+- Each layer transforms the representation
+- The output layer produces the final prediction
+
+::: notes
+- Pixel values enter the input layer and flow forward through each hidden layer
+- Each layer applies a transformation, building a progressively richer representation
+- The output layer distills the representation into a prediction
+- One direction only, no loops (hence "forward" pass)
+:::
+
+## A Number for Each Class {.center}
+
+| Class | Raw score (logit) | Probability |
+|-------|------------------|-------------|
+| No disease | 0.55 | 13% |
+| **Disease** | **2.1** | **87%** |
+
+- The class with the **highest raw score** is the prediction
+- Scores are converted to probabilities using the **softmax** function
+- Everything the network has learned collapses into two numbers at the end
+
+::: notes
+- Output layer produces two numbers (logits), one for each class
+- Softmax converts logits to probabilities that sum to 1
+- Highest probability = the prediction
+- Everything—all layers, weights, and learned features—collapses into two numbers at the end
+:::
+
+# Loss Functions {background-color="#1a252f"}
+
+## How Wrong Are We? {.center}
+
+| Prediction | True label | Loss |
+|-----------|-----------|------|
+| 90% disease | Disease | Low — correct and confident |
+| 55% disease | Disease | Medium — correct but uncertain |
+| 20% disease | Disease | High — wrong and confident |
+
+- After a forward pass, we have a prediction and the correct answer (the **label**)
+- The **loss function** turns the gap between them into a single number
+
+::: notes
+- The loss function takes the prediction and the correct label, returns a number summarising the error
+- Loss near zero: accurate prediction; high loss: wrong or uncertain
+- Cross-entropy loss penalises confident wrong predictions particularly heavily
+- Pushes the network to be appropriately certain only when it has good reason to be
+:::
+
+## A Landscape to Navigate {.center}
+
+```{mermaid}
+graph LR
+  A["Random weights - high loss"] -->|"adjust weights"| B["Better weights - lower loss"] -->|"adjust weights"| C["Good weights - low loss"]
+```
+
+- Every set of weights produces a different loss value
+- Training is the process of **navigating towards the minimum**
+- Think of it as finding the bottom of a valley in a very high-dimensional space
+
+::: notes
+- Every combination of weights is a point in a vast space, there is one dimension per weight
+- The loss function gives a number at each point: how wrong is the network here?
+- Training = moving through this space towards a region of low loss
+- The landscape has many local minima but gradient descent finds good solutions reliably in practice
+:::
+
+# Learning {background-color="#1a252f"}
+
+## Gradient Descent {.center}
+
+```{mermaid}
+graph LR
+  A["Random weights"] --> B["Forward pass:<br/>make a prediction"]
+  B --> C["Calculate loss:<br/>how wrong?"]
+  C --> D["Backward pass:<br/>how much did each<br/>weight contribute?"]
+  D --> E["Nudge each weight<br/>to reduce loss"]
+  E --> B
+```
+
+- Each step nudges every weight a small amount in the direction that reduces loss
+- The size of each step is controlled by the **learning rate**
+
+::: notes
+- The gradient tells us whether increasing or decreasing each weight would increase or decrease the loss
+- Move each weight a small step in the loss-reducing direction, step size = learning rate
+- Repeat: forward pass → compute loss → nudge weights → repeat
+- After thousands of iterations, weights converge to values that produce low loss on new data
+:::
+
+## Backpropagation: Sharing the Blame {.center}
+
+- After a prediction, the error signal travels **backwards** through the network
+- Each weight receives a signal: "you contributed *this much* to the error"
+- All weights are updated at once, efficiently
+
+> The network learns by repeatedly asking: "what would I need to change to do better next time?"
+
+::: notes
+- Backpropagation sends the error signal backwards through the network after a forward pass
+- Uses the chain rule to calculate how much each weight contributed to the loss
+- Gives the gradient for every weight in one efficient backward pass
+- In PyTorch, a single `loss.backward()` call does all of this automatically
+:::
+
+# Why "Deep" Matters {background-color="#1a252f"}
+
+## Layers Build on Layers {.center}
+
+| Depth | What the network detects |
+|-------|--------------------------|
+| Layer 1 | Edges, intensity gradients, colour transitions |
+| Layer 2 | Corners, curves, simple textures |
+| Layer 3 | Shapes, repeating patterns |
+| Layer 4+ | Complex structures, object parts |
+
+- This **hierarchy** emerges automatically from training, it is not programmed in
+- Each layer combines the features from the layer before into something more complex
+
+::: notes
+- Deep networks discover a feature hierarchy automatically, they are not programmed in
+- The structure emerges because it is the most efficient way to represent the training data
+- The same hierarchy appears across different networks trained on different datasets
+- Depth enables this: a shallow network can only represent simple mappings; depth builds abstraction
+:::
+
+## From Pixels to Predictions {.center}
+
+```{mermaid}
+graph LR
+  A["150,528 pixel values"] --> B["Edges and colour gradients"] --> C["Vessel structure and textures"] --> D["Lesion patterns and global features"] --> E["Disease / No disease"]
+```
+
+- The network discovers what to look for, features are not hand-engineered
+- The relevant features for retinopathy emerge from training on labelled images
+- **This is what makes deep learning powerful on complex, high-dimensional data**
+
+::: notes
+- Traditional ML: a domain expert decides what features to extract (vessel diameter, lesion count, etc.)
+- Deep learning: the network discovers what to look for automatically
+- Emergent features often outperform hand-crafted alternatives
+- Core promise: automatic, scalable feature learning directly from raw data
+:::
+
+# Key Takeaways {background-color="#1a252f"}
+
+## The Intuition Behind the Math {.center}
+
+- **Neurons and Weights** — A neuron computes a weighted sum of its inputs; weights are the network's memory.
+- **Layers and Depth** — Neurons form layers; layers form networks; depth enables complex representations.
+- **Activation functions** — ReLU introduces non-linearity, each additional layer adds genuine complexity.
+- **The Forward Pass** — Data flows from pixels through layers to a prediction, one direction only.
+- **Loss Functions** — Measure how wrong the prediction is; cross-entropy penalises confident errors hardest.
+- **Gradient Descent and Backpropagation** — The network learns by repeatedly nudging weights in the loss-reducing direction.
+- **Why Depth Matters** — Feature hierarchies (edges → shapes → structures) emerge automatically from training.
+
+## Thank You! {.center}
+
+Contact:
+
+{{< fa solid envelope >}} [paul.johnson50@nhs.net](mailto:paul.johnson50t@nhs.net)
+
+Code & Slides:
+
+{{< fa brands github >}} [/NHS-South-Central-and-West/deep-learning-without-math](https://github.com/nhs-south-central-and-west/deep-learning-without-math)
