@@ -1,0 +1,7 @@
+/.quarto/
+/_site/
+**/*.quarto_ipynb
+**/*.html
+!assets/**/*.html
+.DS_Store
+CLAUDE.md

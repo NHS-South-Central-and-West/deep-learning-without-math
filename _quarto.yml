@@ -1,0 +1,51 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - session-01-neural-networks.qmd
+    - session-02-cnns-and-transfer-learning.qmd
+
+website:
+  title: "Deep Learning Without Math"
+
+format:
+  revealjs:
+    author: Paul Johnson
+    theme: [default, assets/_theme.scss]
+    slide-number: c/t
+    width: 1280
+    height: 720
+    margin: 0.1
+    fig-align: center
+    controls: true
+    progress: true
+    menu: false
+    navigation-mode: linear
+    transition: fade
+    background-transition: fade
+    section-divs: true
+    preview-links: false
+    link-external-newwindow: true
+    embed-resources: true
+    hide-inactive-cursor: true
+    pause: true
+    highlight-style: printing
+    mermaid:
+      theme: neutral
+    include-after-body:
+      - assets/mermaid-resize.html
+      - assets/progress-bar-color.html
+
+execute:
+  freeze: auto
+  echo: false
+  warning: false
+
+title-slide-attributes:
+    data-background-image: "assets/images/scw_logo.jpg"
+    data-background-position: "right 5% bottom 5%"
+    data-background-size: "22%"
+    data-background-opacity: "1"
+
+from: markdown+emoji
