@@ -2,119 +2,119 @@
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#images-are-big",
     "href": "session-02-cnns-and-transfer-learning.html#images-are-big",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Images Are Big",
-    "text": "Images Are Big\n\n\n\nProperty\nValue\n\n\n\n\nWidth × Height\n224 × 224 pixels\n\n\nColour channels\n3 (red, green, blue)\n\n\nTotal numbers\n150,528\n\n\nWeights in first layer (256 neurons)\n~38 million\n\n\n\n\nA standard fully connected network applied to images would have an enormous number of weights\nMost of those weights would learn nothing useful — there is too much to learn from too little signal\n\n\n\nA 224×224 colour image is over 150,000 numbers\nA single fully connected layer with 256 neurons would have ~38 million weights\nTraining those weights reliably requires an enormous amount of data\nA standard network cannot exploit the fact that an edge at (100,100) is similar to one at (101,100)"
+    "text": "Images Are Big\n\n\n\nProperty\nValue\n\n\n\n\nWidth × Height\n224 × 224 pixels\n\n\nColour channels\n3 (red, green, blue)\n\n\nTotal numbers\n150,528\n\n\nWeights in first layer (256 neurons)\n~38 million\n\n\n\n\nA standard fully connected network applied to images would have an enormous number of weights\nMost of those weights would learn nothing useful, there is too much to learn from too little signal\n\n\n\nA 224×224 colour image is over 150,000 numbers\nA single fully connected layer with 256 neurons would have ~38 million weights\nTraining those weights reliably requires an enormous amount of data\nA standard network cannot exploit the fact that an edge at (100,100) is similar to one at (101,100)"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#no-sense-of-space",
     "href": "session-02-cnns-and-transfer-learning.html#no-sense-of-space",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "No Sense of Space",
-    "text": "No Sense of Space\n\n\n\n\n\n\ngraph LR\n  p1[\"pixel at 100,100\"] --&gt; N[\"neuron\"]\n  p2[\"pixel at 100,101\"] --&gt; N\n  p3[\"pixel at 200,100\"] --&gt; N\n  p4[\"pixel at 224,224\"] --&gt; N\n\n\n\n\n\n\n\n\nA fully connected network treats every pixel as equally related to every other pixel\nBut nearby pixels carry related information — distant pixels do not\nImages have spatial structure that standard networks are blind to\n\n\n\n\n\nFully connected networks receive every pixel with no information about which are neighbours\nImages are not collections of independent numbers — they are spatially structured\nA network that exploits spatial structure learns far more efficiently from far less data\nCNNs are designed to do exactly this"
+    "text": "No Sense of Space\n\n\n\n\n\n\ngraph LR\n  p1[\"pixel at 100,100\"] --&gt; N[\"neuron\"]\n  p2[\"pixel at 100,101\"] --&gt; N\n  p3[\"pixel at 200,100\"] --&gt; N\n  p4[\"pixel at 224,224\"] --&gt; N\n\n\n\n\n\n\n\n\nA fully connected network treats every pixel as equally related to every other pixel\nBut nearby pixels carry related information, distant pixels do not\nImages have spatial structure that standard networks are blind to\n\n\n\n\n\nFully connected networks receive every pixel with no information about which are neighbours\nImages are not collections of independent numbers, they are spatially structured\nA network that exploits spatial structure learns far more efficiently from far less data\nCNNs are designed to do exactly this"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#a-sliding-window",
     "href": "session-02-cnns-and-transfer-learning.html#a-sliding-window",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "A Sliding Window",
-    "text": "A Sliding Window\n\n\n\n\n\ngraph LR\n  img[\"Image: 224 x 224\"] --&gt; conv[\"Filter slides&lt;br/&gt;across image: 3 x 3\"] --&gt; fm[\"Feature Map:&lt;br/&gt;where is the pattern?\"]\n\n\n\n\n\n\n\nA filter (also called a kernel) is a small grid of weights — e.g. 3×3\nIt slides across every position in the image\nAt each position: multiply the overlapping pixels by the filter weights, sum them up\nThe result is a feature map — showing where the pattern was detected\n\n\n\nInstead of connecting every pixel to every neuron, a small filter (e.g. 3×3) slides across the image\nAt each position: compute a weighted sum of the overlapping pixels\nOutput is a feature map — each value shows how strongly the pattern appeared at that position\nOne filter produces one feature map; a layer applies 32, 64, or 128 filters simultaneously"
+    "text": "A Sliding Window\n\n\n\n\n\ngraph LR\n  img[\"Image: 224 x 224\"] --&gt; conv[\"Filter slides&lt;br/&gt;across image: 3 x 3\"] --&gt; fm[\"Feature Map:&lt;br/&gt;where is the pattern?\"]\n\n\n\n\n\n\n\nA filter (also called a kernel) is a small grid of weights (e.g. 3x3)\nIt slides across every position in the image\nAt each position, multiply the overlapping pixels by the filter weights, sum them up\nThe result is a feature map showing where the pattern was detected\n\n\n\nInstead of connecting every pixel to every neuron, a small filter (e.g. 3×3) slides across the image\nAt each position, compute a weighted sum of the overlapping pixels\nOutput is a feature map, each value shows how strongly the pattern appeared at that position\nOne filter produces one feature map; a layer applies 32, 64, or 128 filters simultaneously"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#one-filter-one-pattern",
     "href": "session-02-cnns-and-transfer-learning.html#one-filter-one-pattern",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "One Filter, One Pattern",
-    "text": "One Filter, One Pattern\n\n\n\nFilter\nWhat it detects\nFeature map shows\n\n\n\n\nFilter A\nHorizontal edges\nHorizontal boundaries in the image\n\n\nFilter B\nVertical edges\nVertical boundaries\n\n\nFilter C\nBright spots\nRegions of high local brightness\n\n\n\n\nEach filter learns to detect one specific pattern\nA layer with 64 filters produces 64 feature maps — 64 different “views” of the image\nThe network learns which filters are useful during training\n\n\n\nFilters are not hand-designed — the network learns them from data\nBefore training: random; after training: detect patterns useful for the task (vessel edges, brightness gradients)\nThe number of filters per layer is a design choice — more filters, more patterns detected, more computation"
+    "text": "One Filter, One Pattern\n\n\n\nFilter\nWhat it detects\nFeature map shows\n\n\n\n\nFilter A\nHorizontal edges\nHorizontal boundaries in the image\n\n\nFilter B\nVertical edges\nVertical boundaries\n\n\nFilter C\nBright spots\nRegions of high local brightness\n\n\n\n\nEach filter learns to detect one specific pattern\nA layer with 64 filters produces 64 feature maps — 64 different “views” of the image\nThe network learns which filters are useful during training\n\n\n\nFilters are not hand-designed, the network learns them from data\nBefore training — Random; after training: detect patterns useful for the task (vessel edges, brightness gradients)\nThe number of filters per layer is a design choice — more filters, more patterns detected, more computation"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#simple-to-complex",
     "href": "session-02-cnns-and-transfer-learning.html#simple-to-complex",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Simple to Complex",
-    "text": "Simple to Complex\n\nYou saw this feature hierarchy in Session 1 — convolution is the mechanism that produces it\n\n\n\n\nLayer depth\nTypical features detected\n\n\n\n\nLayer 1\nEdges, colour gradients, brightness changes\n\n\nLayer 2\nCorners, curves, short line segments\n\n\nLayer 3\nTextures, shapes, repeating patterns\n\n\nLayer 4+\nComplex structures, object parts, semantic features\n\n\n\n\nEach layer builds on the feature maps of the layer before it\nComplexity increases with depth — automatically, through training\n\n\n\nThe hierarchy is not programmed — it emerges as the most efficient way to represent the data\nEarly layers: low-level features (edges, gradients, colour transitions)\nMiddle layers: more complex patterns (shapes, textures)\nLate layers: high-level, semantically meaningful features\nFor retinal images: early = vessel edges; middle = vessel branching; late = global disease indicators"
+    "text": "Simple to Complex\n\nWe saw this feature hierarchy in the previous session. Convolution is the mechanism that produces it.\n\n\n\n\nLayer depth\nTypical features detected\n\n\n\n\nLayer 1\nEdges, colour gradients, brightness changes\n\n\nLayer 2\nCorners, curves, short line segments\n\n\nLayer 3\nTextures, shapes, repeating patterns\n\n\nLayer 4+\nComplex structures, object parts, semantic features\n\n\n\n\nEach layer builds on the feature maps of the layer before it\nComplexity increases with depth automatically, through training\n\n\n\nThe hierarchy is not programmed, it emerges as the most efficient way to represent the data\nEarly layers — Low-level features (edges, gradients, colour transitions)\nMiddle layers — More complex patterns (shapes, textures)\nLate layers — High-level, semantically meaningful features\nFor retinal images — Early = vessel edges; middle = vessel branching; late = global disease indicators"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#what-a-trained-network-detects",
     "href": "session-02-cnns-and-transfer-learning.html#what-a-trained-network-detects",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "What a Trained Network Detects",
-    "text": "What a Trained Network Detects\n\n\n\n\n\ngraph TD\n  A[\"Blood vessel edges&lt;br/&gt;(early layers)\"] --&gt; B[\"Vessel branching&lt;br/&gt;patterns\"]\n  C[\"Lesion boundaries&lt;br/&gt;(early layers)\"] --&gt; D[\"Lesion shape&lt;br/&gt;and density\"]\n  B --&gt; E[\"Global disease&lt;br/&gt;indicators (late layers)\"]\n  D --&gt; E\n  E --&gt; F[\"Disease / No disease\"]\n\n\n\n\n\n\n\n\nThis diagram is approximate — the network discovers this structure; we cannot fully interpret every neuron\nBroad pattern: early features are local and simple, late features are global and complex\nTools like Grad-CAM can visualise which parts of a retinal image the network focuses on\nTypically: optic disc, vessel branching points, and regions with visible lesions"
+    "text": "What a Trained Network Detects\n\n\n\n\n\ngraph TD\n  A[\"Blood vessel edges&lt;br/&gt;(early layers)\"] --&gt; B[\"Vessel branching&lt;br/&gt;patterns\"]\n  C[\"Lesion boundaries&lt;br/&gt;(early layers)\"] --&gt; D[\"Lesion shape&lt;br/&gt;and density\"]\n  B --&gt; E[\"Global disease&lt;br/&gt;indicators (late layers)\"]\n  D --&gt; E\n  E --&gt; F[\"Disease / No disease\"]\n\n\n\n\n\n\n\n\nThis diagram is approximate, the network discovers this structure; we cannot fully interpret every neuron\nBroad pattern: early features are local and simple, late features are global and complex\nTools like Grad-CAM can visualise which parts of a retinal image the network focuses on\nTypically, optic disc, vessel branching points, and regions with visible lesions"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#downsampling-the-feature-map",
     "href": "session-02-cnns-and-transfer-learning.html#downsampling-the-feature-map",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Downsampling the Feature Map",
-    "text": "Downsampling the Feature Map\n\n\n\n\n\ngraph LR\n  fm[\"Feature Map: 224 x 224\"] --&gt; pool[\"Max Pooling:&lt;br/&gt;2x2, stride 2\"] --&gt; small[\"Smaller Map: 112 x 112\"]\n\n\n\n\n\n\n\nMax pooling: divide the feature map into small regions, keep the maximum value from each\nHalves the spatial dimensions with a 2×2 pool, stride 2\nKeeps the strongest signal, discards fine spatial detail\n\n\n\nMax pooling: divide the feature map into 2×2 regions, keep only the maximum value from each\nResult: feature map half the width and height of the input\nReduces computation in subsequent layers and retains only the most salient features\nApplied after each conv layer: spatial dimensions shrink, number of channels grows"
+    "text": "Downsampling the Feature Map\n\n\n\n\n\ngraph LR\n  fm[\"Feature Map: 224 x 224\"] --&gt; pool[\"Max Pooling:&lt;br/&gt;2x2, stride 2\"] --&gt; small[\"Smaller Map: 112 x 112\"]\n\n\n\n\n\n\n\nMax pooling — Divide the feature map into small regions, keep the maximum value from each\nHalves the spatial dimensions with a 2×2 pool, stride 2\nKeeps the strongest signal, discards fine spatial detail\n\n\n\nMax pooling — Divide the feature map into 2×2 regions, keep only the maximum value from each\nResult — Feature map half the width and height of the input\nReduces computation in subsequent layers and retains only the most salient features\nApplied after each conv layer — Spatial dimensions shrink, number of channels grows"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#small-shifts-do-not-matter",
     "href": "session-02-cnns-and-transfer-learning.html#small-shifts-do-not-matter",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Small Shifts Do Not Matter",
-    "text": "Small Shifts Do Not Matter\n\nIf the pattern moves a few pixels, the max-pooled value stays roughly the same\nThe network does not need to see the same pattern in exactly the same location to recognise it\nThis is called translation invariance — critical for real-world images\n\n\nA blood vessel does not need to be centred in the image to be detected.\n\n\n\nIn real datasets, the same structure appears at different positions across images\nWithout pooling: the network would need separate detectors for every possible position\nPooling generalises across positions — if the pattern appeared anywhere in the 2×2 region, it is preserved\nA blood vessel at any position in a retinal image will still be detected"
+    "text": "Small Shifts Do Not Matter\n\nIf the pattern moves a few pixels, the max-pooled value stays roughly the same\nThe network does not need to see the same pattern in exactly the same location to recognise it\nThis is called translation invariance, it is critical for real-world images\n\n\nA blood vessel does not need to be centred in the image to be detected.\n\n\n\nIn real datasets, the same structure appears at different positions across images\nWithout pooling: the network would need separate detectors for every possible position\nPooling generalises across positions, if the pattern appeared anywhere in the 2×2 region, it is preserved\nA blood vessel at any position in a retinal image will still be detected"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#stacking-convolutional-blocks",
     "href": "session-02-cnns-and-transfer-learning.html#stacking-convolutional-blocks",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Stacking Convolutional Blocks",
-    "text": "Stacking Convolutional Blocks\n\n\n\n\n\ngraph LR\n  img[\"Input:&lt;br/&gt;224x224x3\"] --&gt; b1[\"Conv Block 1:&lt;br/&gt;Conv, ReLU, Pool&lt;br/&gt;→ 112x112\"] --&gt; b2[\"Block 2:&lt;br/&gt;→ 56x56\"] --&gt; b3[\"Block 3:&lt;br/&gt;→ 28x28\"] --&gt; b4[\"Block 4:&lt;br/&gt;→ 14x14\"] --&gt; head[\"FC Head:&lt;br/&gt;Classification\"]\n\n\n\n\n\n\n\nEach block: Convolution → Activation (ReLU) → Max Pooling\nSpatial dimensions shrink with each block\nNumber of channels (filters) grows: 3 → 32 → 64 → 128 → 256\n\n\n\nStandard block: Conv → ReLU → Max Pooling, stacked repeatedly\nEach block halves spatial dimensions and deepens the channel dimension\nAfter 4 blocks: 14×14 spatial, 256 channels — each representing a complex pattern\nA fully connected head then converts the feature maps to a class prediction"
+    "text": "Stacking Convolutional Blocks\n\n\n\n\n\ngraph LR\n  img[\"Input:&lt;br/&gt;224x224x3\"] --&gt; b1[\"Conv Block 1:&lt;br/&gt;Conv, ReLU, Pool&lt;br/&gt;→ 112x112\"] --&gt; b2[\"Block 2:&lt;br/&gt;→ 56x56\"] --&gt; b3[\"Block 3:&lt;br/&gt;→ 28x28\"] --&gt; b4[\"Block 4:&lt;br/&gt;→ 14x14\"] --&gt; head[\"FC Head:&lt;br/&gt;Classification\"]\n\n\n\n\n\n\n\nEach block — Convolution → Activation (ReLU) → Max Pooling\nSpatial dimensions shrink with each block\nNumber of channels (filters) grows: 3 → 32 → 64 → 128 → 256\n\n\n\nStandard block: Conv → ReLU → Max Pooling, stacked repeatedly\nEach block halves spatial dimensions and deepens the channel dimension\nAfter 4 blocks: 14×14 spatial, 256 channels, each representing a complex pattern\nA fully connected head then converts the feature maps to a class prediction"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#the-baseline-cnn-in-this-project",
     "href": "session-02-cnns-and-transfer-learning.html#the-baseline-cnn-in-this-project",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "The Baseline CNN in This Project",
-    "text": "The Baseline CNN in This Project\n\n\n\n\n\ngraph LR\n  A[\"Input&lt;br/&gt;224×224, 3ch\"] --&gt; B[\"Conv Blocks ×4&lt;br/&gt;32→64→128→256ch\"] --&gt; C[\"AvgPool&lt;br/&gt;1×1, 256-dim\"] --&gt; D[\"FC Head&lt;br/&gt;256→128→2\"] --&gt; E[\"Disease /&lt;br/&gt;No disease\"]\n\n\n\n\n\n\n\nFour convolutional blocks — each building on the features of the last\nAdaptive average pooling collapses spatial dimensions regardless of input size\nTwo fully connected layers with dropout for regularisation\n\n\n\nEach block follows Conv2d → BatchNorm2d → ReLU → MaxPool2d\nChannels grow: 3 → 32 → 64 → 128 → 256\nAdaptive average pooling always produces a 256-dim feature vector regardless of input size\nFC head maps to two output scores: healthy vs disease"
+    "text": "The Baseline CNN in This Project\n\n\n\n\n\ngraph LR\n  A[\"Input&lt;br/&gt;224×224, 3ch\"] --&gt; B[\"Conv Blocks ×4&lt;br/&gt;32→64→128→256ch\"] --&gt; C[\"AvgPool&lt;br/&gt;1×1, 256-dim\"] --&gt; D[\"FC Head&lt;br/&gt;256→128→2\"] --&gt; E[\"Disease /&lt;br/&gt;No disease\"]\n\n\n\n\n\n\n\nFour convolutional blocks, each building on the features of the last\nAdaptive average pooling collapses spatial dimensions regardless of input size\nTwo fully connected layers with dropout for regularisation\n\n\n\nEach block follows Conv2d → BatchNorm2d → ReLU → MaxPool2d\nChannels grow: 3 → 32 → 64 → 128 → 256\nAdaptive average pooling always produces a 256-dim feature vector regardless of input size\nFC head maps to two output scores: healthy vs disease"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#why-cnns-are-a-natural-fit",
     "href": "session-02-cnns-and-transfer-learning.html#why-cnns-are-a-natural-fit",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Why CNNs Are a Natural Fit",
-    "text": "Why CNNs Are a Natural Fit\n\n\n\n\n\n\n\nProperty\nWhy it matters for retinal images\n\n\n\n\nSpatial structure\nVessel patterns and lesions are spatially localised\n\n\nTranslation invariance\nDisease indicators appear anywhere in the image\n\n\nFeature hierarchy\nFrom vessel edges to global disease patterns\n\n\nParameter efficiency\n~5,700 training images — far fewer than needed for fully connected\n\n\n\n\n\nFundus images have clear spatial structure: circular optic disc, radial vessels, localised lesions\nCNNs are designed to exploit exactly this kind of structure\nTranslation invariance handles variation in field-of-view and image alignment across datasets\nWith only ~5,700 training images, CNN parameter efficiency is not a luxury — it is a necessity"
+    "text": "Why CNNs Are a Natural Fit\n\n\n\n\n\n\n\nProperty\nWhy it matters for retinal images\n\n\n\n\nSpatial structure\nVessel patterns and lesions are spatially localised\n\n\nTranslation invariance\nDisease indicators appear anywhere in the image\n\n\nFeature hierarchy\nFrom vessel edges to global disease patterns\n\n\nParameter efficiency\n~5,700 training images, far fewer than needed for fully connected\n\n\n\n\n\nFundus images have clear spatial structure: circular optic disc, radial vessels, localised lesions\nCNNs are designed to exploit exactly this kind of structure\nTranslation invariance handles variation in field-of-view and image alignment across datasets\nWith only ~5,700 training images, CNN parameter efficiency is not a luxury, it is a necessity"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#standing-on-the-shoulders-of-giants",
     "href": "session-02-cnns-and-transfer-learning.html#standing-on-the-shoulders-of-giants",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Standing on the Shoulders of Giants",
-    "text": "Standing on the Shoulders of Giants\n\n\n\n\n\n\n\n\n\nImageNet training\nFine-tuning for retinopathy\n\n\n\n\nImages\n1.2 million\n~5,700\n\n\nCategories\n1,000\n2\n\n\nTraining time\nWeeks (on specialist hardware)\nHours (on a laptop)\n\n\nWhat is learned\nRich general visual features\nTask-specific adaptations\n\n\n\n\nWe start with a network already trained on ImageNet\nIts weights already encode a sophisticated understanding of visual patterns\nWe then adapt those weights to our specific task\n\n\n\nTraining a network from scratch on ImageNet takes weeks on specialist hardware\nThe pre-trained weights encode rich, general-purpose visual features useful for many tasks\nInstead of repeating this for every task, we start with pre-trained weights and adapt them\nWith ~5,700 images, this is not just convenient — it is often the only practical path to a good model"
+    "text": "Standing on the Shoulders of Giants\n\n\n\n\n\n\n\n\n\nImageNet training\nFine-tuning for retinopathy\n\n\n\n\nImages\n1.2 million\n~5,700\n\n\nCategories\n1,000\n2\n\n\nTraining time\nWeeks (on specialist hardware)\nHours (on a laptop)\n\n\nWhat is learned\nRich general visual features\nTask-specific adaptations\n\n\n\n\nWe start with a network already trained on ImageNet\nIts weights already encode a sophisticated understanding of visual patterns\nWe then adapt those weights to our specific task\n\n\n\nTraining a network from scratch on ImageNet takes weeks on specialist hardware\nThe pre-trained weights encode rich, general-purpose visual features useful for many tasks\nInstead of repeating this for every task, we start with pre-trained weights and adapt them\nWith ~5,700 images, this is not just convenient, it is often the only practical path to a good model"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#pre-trained-weights-encode-general-vision",
     "href": "session-02-cnns-and-transfer-learning.html#pre-trained-weights-encode-general-vision",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Pre-Trained Weights Encode General Vision",
-    "text": "Pre-Trained Weights Encode General Vision\n\n\n\n\n\ngraph LR\n  imagenet[\"1.2M images:&lt;br/&gt;ImageNet, 1000 categories\"] --&gt; pretrained[\"Pre-trained&lt;br/&gt;ResNet-18\"] --&gt; finetune[\"Fine-tuning on&lt;br/&gt;retinal images\"] --&gt; classifier[\"Retinopathy&lt;br/&gt;classifier\"]\n\n\n\n\n\n\n\nResNet-18: 18-layer deep network, pre-trained on ImageNet\nWe replace only the final layer (1,000 categories → 2 categories)\nEverything else — 17 layers of learned visual features — is kept and adapted\n\n\n\nResNet-18: 18-layer network with residual connections (shortcuts that stabilise training of deep networks)\nPre-trained on ImageNet; we replace only the final classification layer (1,000 → 2 categories)\nThe rest of the network — 17 layers of learned visual features — is kept and adapted, not discarded"
+    "text": "Pre-Trained Weights Encode General Vision\n\n\n\n\n\ngraph LR\n  imagenet[\"1.2M images:&lt;br/&gt;ImageNet, 1000 categories\"] --&gt; pretrained[\"Pre-trained&lt;br/&gt;ResNet-18\"] --&gt; finetune[\"Fine-tuning on&lt;br/&gt;retinal images\"] --&gt; classifier[\"Retinopathy&lt;br/&gt;classifier\"]\n\n\n\n\n\n\n\nResNet-18 — 18-layer deep network, pre-trained on ImageNet\nWe replace only the final layer (1,000 categories → 2 categories)\nEverything else—17 layers of learned visual features—is kept and adapted\n\n\n\nResNet-18 — 18-layer network with residual connections (shortcuts that stabilise training of deep networks)\nPre-trained on ImageNet; we replace only the final classification layer (1,000 → 2 categories)\nThe rest of the network—17 layers of learned visual features—is kept and adapted, not discarded"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#universal-vs-task-specific-features",
     "href": "session-02-cnns-and-transfer-learning.html#universal-vs-task-specific-features",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Universal vs Task-Specific Features",
-    "text": "Universal vs Task-Specific Features\n\n\n\n\n\n\n\n\nLocation\nWhat is learned\nStrategy\n\n\n\n\nEarly layers\nEdges, curves, textures — universal\nKeep — these transfer to any vision task\n\n\nMiddle layers\nShapes, patterns — partially universal\nLightly adapt\n\n\nLate layers\nTask-specific, high-level features\nFully retrain — adapt to retinopathy\n\n\n\n\n\nEarly layer features (edges, curves, textures) appear in retinal images just as in photographs of cats and cars\nDiscarding and relearning these from scratch would be wasteful\nLate layers encode ImageNet-specific features (cars, dogs, birds) — less useful for retinopathy\nStrategy: keep early layers, retrain late layers guided by retinal image data"
+    "text": "Universal vs Task-Specific Features\n\n\n\n\n\n\n\n\nLocation\nWhat is learned\nStrategy\n\n\n\n\nEarly layers\nEdges, curves, textures — universal\nKeep — these transfer to any vision task\n\n\nMiddle layers\nShapes, patterns — partially universal\nLightly adapt\n\n\nLate layers\nTask-specific, high-level features\nFully retrain — adapt to retinopathy\n\n\n\n\n\nEarly layer features (edges, curves, textures) appear in retinal images just as in photographs of cats and cars\nDiscarding and relearning these from scratch would be wasteful\nLate layers encode ImageNet-specific features (cars, dogs, birds) (less useful for retinopathy)\nStrategy — Keep early layers, retrain late layers guided by retinal image data"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#the-two-phase-fine-tuning-strategy",
     "href": "session-02-cnns-and-transfer-learning.html#the-two-phase-fine-tuning-strategy",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "The Two-Phase Fine-Tuning Strategy",
-    "text": "The Two-Phase Fine-Tuning Strategy\n\n\n\n\n\ngraph LR\n  A[\"Pre-trained ResNet-18&lt;br/&gt;(backbone frozen)\"] --&gt;|\"Phase 1:&lt;br/&gt;5 epochs, lr = 1e-3\"| B[\"Head stabilises,&lt;br/&gt;backbone unchanged\"] --&gt;|\"Phase 2:&lt;br/&gt;up to 30 epochs, lr = 1e-4\"| C[\"All layers&lt;br/&gt;fine-tuned\"]\n\n\n\n\n\n\n\nPhase 1: Train only the new classification head — the backbone is frozen\nPhase 2: Unfreeze everything and train the whole network at a lower learning rate\nYou will see exactly this two-phase pattern in the code during Session 4\n\n\n\nUnfreezing everything immediately risks large, noisy gradients from the random head corrupting pre-trained weights\nPhase 1: train only the head — let it stabilise before it influences the backbone\nPhase 2: unfreeze everything, train at a much lower learning rate — nudge rather than overwrite\nThis is the exact approach used in the notebook"
+    "text": "The Two-Phase Fine-Tuning Strategy\n\n\n\n\n\ngraph LR\n  A[\"Pre-trained ResNet-18&lt;br/&gt;(backbone frozen)\"] --&gt;|\"Phase 1:&lt;br/&gt;5 epochs, lr = 1e-3\"| B[\"Head stabilises,&lt;br/&gt;backbone unchanged\"] --&gt;|\"Phase 2:&lt;br/&gt;up to 30 epochs, lr = 1e-4\"| C[\"All layers&lt;br/&gt;fine-tuned\"]\n\n\n\n\n\n\n\nPhase 1 — Train only the new classification head — the backbone is frozen\nPhase 2 — Unfreeze everything and train the whole network at a lower learning rate\nYou will see exactly this two-phase pattern in the code during Session 4\n\n\n\nUnfreezing everything immediately risks large, noisy gradients from the random head corrupting pre-trained weights\nPhase 1: train only the head — let it stabilise before it influences the backbone\nPhase 2: unfreeze everything, train at a much lower learning rate — nudge rather than overwrite\nThis is the exact approach used in the notebook"
   },
   {
-    "objectID": "session-02-cnns-and-transfer-learning.html#session-2-cnns-transfer-learning",
-    "href": "session-02-cnns-and-transfer-learning.html#session-2-cnns-transfer-learning",
-    "title": "How Computers See: CNNs & Transfer Learning",
-    "section": "Session 2: CNNs & Transfer Learning",
-    "text": "Session 2: CNNs & Transfer Learning\n\nThe image problem: fully connected networks are too large and ignore spatial structure\nConvolution: a small filter slides across the image, detecting one pattern and producing a feature map\nPooling: downsamples feature maps, reduces computation, and provides translation invariance\nCNN architecture: convolutional blocks (Conv → ReLU → Pool) build a feature hierarchy automatically\nWhy CNNs fit retinal images: spatial structure, translation invariance, and parameter efficiency with limited data\nTransfer learning: start with ImageNet pre-trained weights — general visual features transfer well\nFine-tuning: keep early layers, retrain late layers; two-phase strategy stabilises training"
+    "objectID": "session-02-cnns-and-transfer-learning.html#convolution-transfer-learning",
+    "href": "session-02-cnns-and-transfer-learning.html#convolution-transfer-learning",
+    "title": "Deep Learning Without Math",
+    "section": "Convolution & Transfer Learning",
+    "text": "Convolution & Transfer Learning\n\nThe image problem — Fully connected networks are too large and ignore spatial structure\nConvolution — A small filter slides across the image, detecting one pattern and producing a feature map\nPooling — Downsamples feature maps, reduces computation, and provides translation invariance\nCNN architecture — Convolutional blocks (Conv → ReLU → Pool) build a feature hierarchy automatically\nWhy CNNs fit retinal images — Spatial structure, translation invariance, and parameter efficiency with limited data\nTransfer learning — Start with ImageNet pre-trained weights, general visual features transfer well\nFine-tuning — Keep early layers, retrain late layers; two-phase strategy stabilises training"
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#thank-you",
     "href": "session-02-cnns-and-transfer-learning.html#thank-you",
-    "title": "How Computers See: CNNs & Transfer Learning",
+    "title": "Deep Learning Without Math",
     "section": "Thank You!",
     "text": "Thank You!\nContact:\n paul.johnson50@nhs.net\nCode & Slides:\n /NHS-South-Central-and-West/deep-learning-without-math"
   },
@@ -130,7 +130,7 @@
     "href": "index.html#sessions",
     "title": "Deep Learning Without Math",
     "section": "Sessions",
-    "text": "Sessions\n\nSession 1: Neural Networks\nThe core concepts behind deep learning: neurons, weights, layers, activation functions, the forward pass, loss functions, and how gradient descent trains a network.\n\n\nSession 2: CNNs & Transfer Learning (Coming Soon)\nHow convolutional networks process images, the feature hierarchies they learn, and how pre-trained ImageNet weights can be adapted to new tasks with limited data."
+    "text": "Sessions\n\nSession 1: Neural Networks\nThe core concepts behind deep learning: neurons, weights, layers, activation functions, the forward pass, loss functions, and how gradient descent trains a network.\n\n\nSession 2: CNNs & Transfer Learning\nHow convolutional networks process images, the feature hierarchies they learn, and how pre-trained ImageNet weights can be adapted to new tasks with limited data."
   },
   {
     "objectID": "session-01-neural-networks.html#a-step-change",

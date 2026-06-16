@@ -109,8 +109,8 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="session-1-neural-networks"><a href="session-01-neural-networks.html">Session 1: Neural Networks</a></h3>
 <p>The core concepts behind deep learning: neurons, weights, layers, activation functions, the forward pass, loss functions, and how gradient descent trains a network.</p>
 </section>
-<section id="session-2-cnns-transfer-learning-coming-soon" class="level3">
-<h3 class="anchored" data-anchor-id="session-2-cnns-transfer-learning-coming-soon">Session 2: CNNs &amp; Transfer Learning (<strong>Coming Soon</strong>)</h3>
+<section id="session-2-cnns-transfer-learning" class="level3">
+<h3 class="anchored" data-anchor-id="session-2-cnns-transfer-learning"><a href="session-02-cnns-and-transfer-learning.html">Session 2: CNNs &amp; Transfer Learning</a></h3>
 <p>How convolutional networks process images, the feature hierarchies they learn, and how pre-trained ImageNet weights can be adapted to new tasks with limited data.</p>
 
 
@@ -191,7 +191,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/NHS-South-Central-and-West\.github\.io\/deep-learning-without-math\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
