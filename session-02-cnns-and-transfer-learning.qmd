@@ -1,0 +1,318 @@
+---
+title: "Deep Learning Without Math"
+subtitle: "How Computers See: CNNs & Transfer Learning"
+footer: "Deep Learning: CNNs & Transfer Learning"
+---
+
+# The Image Problem {background-color="#1a252f"}
+
+## Images Are Big {.center}
+
+| Property | Value |
+|----------|-------|
+| Width × Height | 224 × 224 pixels |
+| Colour channels | 3 (red, green, blue) |
+| Total numbers | **150,528** |
+| Weights in first layer (256 neurons) | ~38 million |
+
+- A standard fully connected network applied to images would have an enormous number of weights
+- Most of those weights would learn nothing useful, there is too much to learn from too little signal
+
+::: notes
+- A 224×224 colour image is over 150,000 numbers
+- A single fully connected layer with 256 neurons would have ~38 million weights
+- Training those weights reliably requires an enormous amount of data
+- A standard network cannot exploit the fact that an edge at (100,100) is similar to one at (101,100)
+:::
+
+## No Sense of Space
+
+:::: {.nn-layout}
+```{mermaid}
+graph LR
+  p1["pixel at 100,100"] --> N["neuron"]
+  p2["pixel at 100,101"] --> N
+  p3["pixel at 200,100"] --> N
+  p4["pixel at 224,224"] --> N
+```
+::: {.nn-bullets}
+- A fully connected network treats every pixel as equally related to every other pixel
+- But nearby pixels carry related information, distant pixels do not
+- Images have **spatial structure** that standard networks are blind to
+:::
+::::
+
+::: notes
+- Fully connected networks receive every pixel with no information about which are neighbours
+- Images are not collections of independent numbers, they are spatially structured
+- A network that exploits spatial structure learns far more efficiently from far less data
+- CNNs are designed to do exactly this
+:::
+
+# Convolution {background-color="#1a252f"}
+
+## A Sliding Window {.center}
+
+```{mermaid}
+graph LR
+  img["Image: 224 x 224"] --> conv["Filter slides<br/>across image: 3 x 3"] --> fm["Feature Map:<br/>where is the pattern?"]
+```
+
+- A **filter** (also called a kernel) is a small grid of weights (e.g. 3x3)
+- It slides across every position in the image
+- At each position, multiply the overlapping pixels by the filter weights, sum them up
+- The result is a **feature map** showing where the pattern was detected
+
+::: notes
+- Instead of connecting every pixel to every neuron, a small filter (e.g. 3×3) slides across the image
+- At each position, compute a weighted sum of the overlapping pixels
+- Output is a feature map, each value shows how strongly the pattern appeared at that position
+- One filter produces one feature map; a layer applies 32, 64, or 128 filters simultaneously
+:::
+
+## One Filter, One Pattern {.center}
+
+| Filter | What it detects | Feature map shows |
+|--------|----------------|-------------------|
+| Filter A | Horizontal edges | Horizontal boundaries in the image |
+| Filter B | Vertical edges | Vertical boundaries |
+| Filter C | Bright spots | Regions of high local brightness |
+
+- Each filter learns to detect **one specific pattern**
+- A layer with 64 filters produces 64 feature maps — 64 different "views" of the image
+- The network learns **which filters are useful** during training
+
+::: notes
+- Filters are not hand-designed, the network learns them from data
+- Before training — Random; after training: detect patterns useful for the task (vessel edges, brightness gradients)
+- The number of filters per layer is a design choice — more filters, more patterns detected, more computation
+:::
+
+# What Filters Learn {background-color="#1a252f"}
+
+## Simple to Complex {.center}
+
+- We saw this feature hierarchy in the previous session. Convolution is the mechanism that produces it.
+
+| Layer depth | Typical features detected |
+|-------------|--------------------------|
+| Layer 1 | Edges, colour gradients, brightness changes |
+| Layer 2 | Corners, curves, short line segments |
+| Layer 3 | Textures, shapes, repeating patterns |
+| Layer 4+ | Complex structures, object parts, semantic features |
+
+- Each layer builds on the feature maps of the layer before it
+- Complexity increases with depth automatically, through training
+
+::: notes
+- The hierarchy is not programmed, it emerges as the most efficient way to represent the data
+- Early layers — Low-level features (edges, gradients, colour transitions)
+- Middle layers — More complex patterns (shapes, textures)
+- Late layers — High-level, semantically meaningful features
+- For retinal images — Early = vessel edges; middle = vessel branching; late = global disease indicators
+:::
+
+## What a Trained Network Detects {.center}
+
+```{mermaid}
+graph TD
+  A["Blood vessel edges<br/>(early layers)"] --> B["Vessel branching<br/>patterns"]
+  C["Lesion boundaries<br/>(early layers)"] --> D["Lesion shape<br/>and density"]
+  B --> E["Global disease<br/>indicators (late layers)"]
+  D --> E
+  E --> F["Disease / No disease"]
+```
+
+::: notes
+- This diagram is approximate, the network discovers this structure; we cannot fully interpret every neuron
+- Broad pattern: early features are local and simple, late features are global and complex
+- Tools like Grad-CAM can visualise which parts of a retinal image the network focuses on
+- Typically, optic disc, vessel branching points, and regions with visible lesions
+:::
+
+# Pooling {background-color="#1a252f"}
+
+## Downsampling the Feature Map {.center}
+
+```{mermaid}
+graph LR
+  fm["Feature Map: 224 x 224"] --> pool["Max Pooling:<br/>2x2, stride 2"] --> small["Smaller Map: 112 x 112"]
+```
+
+- **Max pooling** — Divide the feature map into small regions, keep the maximum value from each
+- Halves the spatial dimensions with a 2×2 pool, stride 2
+- Keeps the strongest signal, discards fine spatial detail
+
+::: notes
+- Max pooling — Divide the feature map into 2×2 regions, keep only the maximum value from each
+- Result — Feature map half the width and height of the input
+- Reduces computation in subsequent layers and retains only the most salient features
+- Applied after each conv layer — Spatial dimensions shrink, number of channels grows
+:::
+
+## Small Shifts Do Not Matter {.center}
+
+- If the pattern moves a few pixels, the max-pooled value stays roughly the same
+- The network does not need to see the same pattern in exactly the same location to recognise it
+- This is called **translation invariance**, it is critical for real-world images
+
+> A blood vessel does not need to be centred in the image to be detected.
+
+::: notes
+- In real datasets, the same structure appears at different positions across images
+- Without pooling: the network would need separate detectors for every possible position
+- Pooling generalises across positions, if the pattern appeared anywhere in the 2×2 region, it is preserved
+- A blood vessel at any position in a retinal image will still be detected
+:::
+
+# CNN Architecture {background-color="#1a252f"}
+
+## Stacking Convolutional Blocks {.center}
+
+```{mermaid}
+graph LR
+  img["Input:<br/>224x224x3"] --> b1["Conv Block 1:<br/>Conv, ReLU, Pool<br/>→ 112x112"] --> b2["Block 2:<br/>→ 56x56"] --> b3["Block 3:<br/>→ 28x28"] --> b4["Block 4:<br/>→ 14x14"] --> head["FC Head:<br/>Classification"]
+```
+
+- Each block — Convolution → Activation (ReLU) → Max Pooling
+- Spatial dimensions **shrink** with each block
+- Number of channels (filters) **grows**: 3 → 32 → 64 → 128 → 256
+
+::: notes
+- Standard block: Conv → ReLU → Max Pooling, stacked repeatedly
+- Each block halves spatial dimensions and deepens the channel dimension
+- After 4 blocks: 14×14 spatial, 256 channels, each representing a complex pattern
+- A fully connected head then converts the feature maps to a class prediction
+:::
+
+## The Baseline CNN in This Project {.center}
+
+```{mermaid}
+graph LR
+  A["Input<br/>224×224, 3ch"] --> B["Conv Blocks ×4<br/>32→64→128→256ch"] --> C["AvgPool<br/>1×1, 256-dim"] --> D["FC Head<br/>256→128→2"] --> E["Disease /<br/>No disease"]
+```
+
+- Four convolutional blocks, each building on the features of the last
+- Adaptive average pooling collapses spatial dimensions regardless of input size
+- Two fully connected layers with dropout for regularisation
+
+::: notes
+- Each block follows Conv2d → BatchNorm2d → ReLU → MaxPool2d
+- Channels grow: 3 → 32 → 64 → 128 → 256
+- Adaptive average pooling always produces a 256-dim feature vector regardless of input size
+- FC head maps to two output scores: healthy vs disease
+:::
+
+# The Retinopathy Context {background-color="#1a252f"}
+
+## Why CNNs Are a Natural Fit {.center}
+
+| Property | Why it matters for retinal images |
+|----------|----------------------------------|
+| Spatial structure | Vessel patterns and lesions are spatially localised |
+| Translation invariance | Disease indicators appear anywhere in the image |
+| Feature hierarchy | From vessel edges to global disease patterns |
+| Parameter efficiency | ~5,700 training images, far fewer than needed for fully connected |
+
+::: notes
+- Fundus images have clear spatial structure: circular optic disc, radial vessels, localised lesions
+- CNNs are designed to exploit exactly this kind of structure
+- Translation invariance handles variation in field-of-view and image alignment across datasets
+- With only ~5,700 training images, CNN parameter efficiency is not a luxury, it is a necessity
+:::
+
+# Transfer Learning {background-color="#1a252f"}
+
+## Standing on the Shoulders of Giants {.center}
+
+| | ImageNet training | Fine-tuning for retinopathy |
+|--|--|--|
+| Images | 1.2 million | ~5,700 |
+| Categories | 1,000 | 2 |
+| Training time | Weeks (on specialist hardware) | Hours (on a laptop) |
+| What is learned | Rich general visual features | Task-specific adaptations |
+
+- We **start** with a network already trained on ImageNet
+- Its weights already encode a sophisticated understanding of visual patterns
+- We then **adapt** those weights to our specific task
+
+::: notes
+- Training a network from scratch on ImageNet takes weeks on specialist hardware
+- The pre-trained weights encode rich, general-purpose visual features useful for many tasks
+- Instead of repeating this for every task, we start with pre-trained weights and adapt them
+- With ~5,700 images, this is not just convenient, it is often the only practical path to a good model
+:::
+
+## Pre-Trained Weights Encode General Vision {.center}
+
+```{mermaid}
+graph LR
+  imagenet["1.2M images:<br/>ImageNet, 1000 categories"] --> pretrained["Pre-trained<br/>ResNet-18"] --> finetune["Fine-tuning on<br/>retinal images"] --> classifier["Retinopathy<br/>classifier"]
+```
+
+- ResNet-18 — 18-layer deep network, pre-trained on ImageNet
+- We replace only the final layer (1,000 categories → 2 categories)
+- Everything else—17 layers of learned visual features—is kept and adapted
+
+::: notes
+- ResNet-18 — 18-layer network with residual connections (shortcuts that stabilise training of deep networks)
+- Pre-trained on ImageNet; we replace only the final classification layer (1,000 → 2 categories)
+- The rest of the network—17 layers of learned visual features—is kept and adapted, not discarded
+:::
+
+# Why Fine-Tuning Works {background-color="#1a252f"}
+
+## Universal vs Task-Specific Features {.center}
+
+| Location | What is learned | Strategy |
+|----------|----------------|---------|
+| Early layers | Edges, curves, textures — universal | **Keep** — these transfer to any vision task |
+| Middle layers | Shapes, patterns — partially universal | **Lightly adapt** |
+| Late layers | Task-specific, high-level features | **Fully retrain** — adapt to retinopathy |
+
+::: notes
+- Early layer features (edges, curves, textures) appear in retinal images just as in photographs of cats and cars
+- Discarding and relearning these from scratch would be wasteful
+- Late layers encode ImageNet-specific features (cars, dogs, birds) (less useful for retinopathy)
+- Strategy — Keep early layers, retrain late layers guided by retinal image data
+:::
+
+## The Two-Phase Fine-Tuning Strategy {.center}
+
+```{mermaid}
+graph LR
+  A["Pre-trained ResNet-18<br/>(backbone frozen)"] -->|"Phase 1:<br/>5 epochs, lr = 1e-3"| B["Head stabilises,<br/>backbone unchanged"] -->|"Phase 2:<br/>up to 30 epochs, lr = 1e-4"| C["All layers<br/>fine-tuned"]
+```
+
+- **Phase 1** — Train only the new classification head — the backbone is frozen
+- **Phase 2** — Unfreeze everything and train the whole network at a lower learning rate
+- You will see exactly this two-phase pattern in the code during Session 4
+
+::: notes
+- Unfreezing everything immediately risks large, noisy gradients from the random head corrupting pre-trained weights
+- Phase 1: train only the head — let it stabilise before it influences the backbone
+- Phase 2: unfreeze everything, train at a much lower learning rate — nudge rather than overwrite
+- This is the exact approach used in the notebook
+:::
+
+# Key Takeaways {background-color="#1a252f"}
+
+## Convolution & Transfer Learning
+
+- **The image problem** — Fully connected networks are too large and ignore spatial structure
+- **Convolution** — A small filter slides across the image, detecting one pattern and producing a feature map
+- **Pooling** — Downsamples feature maps, reduces computation, and provides translation invariance
+- **CNN architecture** — Convolutional blocks (Conv → ReLU → Pool) build a feature hierarchy automatically
+- **Why CNNs fit retinal images** — Spatial structure, translation invariance, and parameter efficiency with limited data
+- **Transfer learning** — Start with ImageNet pre-trained weights, general visual features transfer well
+- **Fine-tuning** — Keep early layers, retrain late layers; two-phase strategy stabilises training
+
+## Thank You! {.center}
+
+Contact:
+
+{{< fa solid envelope >}} [paul.johnson50@nhs.net](mailto:paul.johnson50t@nhs.net)
+
+Code & Slides:
+
+{{< fa brands github >}} [/NHS-South-Central-and-West/deep-learning-without-math](https://github.com/nhs-south-central-and-west/deep-learning-without-math)
