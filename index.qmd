@@ -15,6 +15,6 @@ A series of sessions on deep learning for non-technical audiences, building intu
 
 The core concepts behind deep learning: neurons, weights, layers, activation functions, the forward pass, loss functions, and how gradient descent trains a network.
 
-### Session 2: CNNs & Transfer Learning (**Coming Soon**)
+### [Session 2: CNNs & Transfer Learning](session-02-cnns-and-transfer-learning.html)
 
 How convolutional networks process images, the feature hierarchies they learn, and how pre-trained ImageNet weights can be adapted to new tasks with limited data.
