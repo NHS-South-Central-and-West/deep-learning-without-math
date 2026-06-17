@@ -343,15 +343,11 @@ graph LR
 
 # Key Takeaways {background-color="#1a252f"}
 
-## The Intuition Behind the Math {.center}
+## The Short Version {.center}
 
-- **Neurons and Weights** — A neuron computes a weighted sum of its inputs; weights are the network's memory.
-- **Layers and Depth** — Neurons form layers; layers form networks; depth enables complex representations.
-- **Activation functions** — ReLU introduces non-linearity, each additional layer adds genuine complexity.
-- **The Forward Pass** — Data flows from pixels through layers to a prediction, one direction only.
-- **Loss Functions** — Measure how wrong the prediction is; cross-entropy penalises confident errors hardest.
-- **Gradient Descent and Backpropagation** — The network learns by repeatedly nudging weights in the loss-reducing direction.
-- **Why Depth Matters** — Feature hierarchies (edges → shapes → structures) emerge automatically from training.
+- The network's knowledge lives entirely in its weights — before training it knows nothing; after, the weights encode everything it has learned.
+- Learning is just repeated error correction: make a prediction, measure how wrong it was, nudge every weight slightly in the direction that reduces the mistake.
+- Depth is what transforms simple edge detectors into disease classifiers — each layer builds on the last, and the hierarchy emerges automatically from training.
 
 ## Thank You! {.center}
 
