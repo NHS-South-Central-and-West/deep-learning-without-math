@@ -4851,16 +4851,12 @@ display:block!important;
 <h1>Key Takeaways</h1>
 
 </section>
-<section id="convolution-transfer-learning" class="slide level2">
-<h2>Convolution &amp; Transfer Learning</h2>
+<section id="the-bigger-picture" class="slide level2 center">
+<h2>The Bigger Picture</h2>
 <ul>
-<li><strong>The image problem</strong> — Fully connected networks are too large and ignore spatial structure</li>
-<li><strong>Convolution</strong> — A small filter slides across the image, detecting one pattern and producing a feature map</li>
-<li><strong>Pooling</strong> — Downsamples feature maps, reduces computation, and provides translation invariance</li>
-<li><strong>CNN architecture</strong> — Convolutional blocks (Conv → ReLU → Pool) build a feature hierarchy automatically</li>
-<li><strong>Why CNNs fit retinal images</strong> — Spatial structure, translation invariance, and parameter efficiency with limited data</li>
-<li><strong>Transfer learning</strong> — Start with ImageNet pre-trained weights, general visual features transfer well</li>
-<li><strong>Fine-tuning</strong> — Keep early layers, retrain late layers; two-phase strategy stabilises training</li>
+<li>A CNN doesn’t look at every pixel at once — a small filter slides across the image, detecting one pattern at a time, which is why CNNs work so well with limited data.</li>
+<li>The feature hierarchy — edges, then shapes, then structures — isn’t programmed in; it emerges because that’s the most efficient way to represent the data.</li>
+<li>Weights trained on photographs of cats and dogs already encode a sophisticated understanding of visual structure; adapting them to retinal images takes hours, not weeks.</li>
 </ul>
 </section>
 <section id="thank-you" class="slide level2 center">

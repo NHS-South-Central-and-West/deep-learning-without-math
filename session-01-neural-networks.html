@@ -4889,16 +4889,12 @@ display:block!important;
 <h1>Key Takeaways</h1>
 
 </section>
-<section id="the-intuition-behind-the-math" class="slide level2 center">
-<h2>The Intuition Behind the Math</h2>
+<section id="the-short-version" class="slide level2 center">
+<h2>The Short Version</h2>
 <ul>
-<li><strong>Neurons and Weights</strong> — A neuron computes a weighted sum of its inputs; weights are the network’s memory.</li>
-<li><strong>Layers and Depth</strong> — Neurons form layers; layers form networks; depth enables complex representations.</li>
-<li><strong>Activation functions</strong> — ReLU introduces non-linearity, each additional layer adds genuine complexity.</li>
-<li><strong>The Forward Pass</strong> — Data flows from pixels through layers to a prediction, one direction only.</li>
-<li><strong>Loss Functions</strong> — Measure how wrong the prediction is; cross-entropy penalises confident errors hardest.</li>
-<li><strong>Gradient Descent and Backpropagation</strong> — The network learns by repeatedly nudging weights in the loss-reducing direction.</li>
-<li><strong>Why Depth Matters</strong> — Feature hierarchies (edges → shapes → structures) emerge automatically from training.</li>
+<li>The network’s knowledge lives entirely in its weights — before training it knows nothing; after, the weights encode everything it has learned.</li>
+<li>Learning is just repeated error correction: make a prediction, measure how wrong it was, nudge every weight slightly in the direction that reduces the mistake.</li>
+<li>Depth is what transforms simple edge detectors into disease classifiers — each layer builds on the last, and the hierarchy emerges automatically from training.</li>
 </ul>
 </section>
 <section id="thank-you" class="slide level2 center">

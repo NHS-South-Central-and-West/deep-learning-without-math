@@ -105,11 +105,11 @@
     "text": "The Two-Phase Fine-Tuning Strategy\n\n\n\n\n\ngraph LR\n  A[\"Pre-trained ResNet-18&lt;br/&gt;(backbone frozen)\"] --&gt;|\"Phase 1:&lt;br/&gt;5 epochs, lr = 1e-3\"| B[\"Head stabilises,&lt;br/&gt;backbone unchanged\"] --&gt;|\"Phase 2:&lt;br/&gt;up to 30 epochs, lr = 1e-4\"| C[\"All layers&lt;br/&gt;fine-tuned\"]\n\n\n\n\n\n\n\nPhase 1 — Train only the new classification head — the backbone is frozen\nPhase 2 — Unfreeze everything and train the whole network at a lower learning rate\nYou will see exactly this two-phase pattern in the code during Session 4\n\n\n\nUnfreezing everything immediately risks large, noisy gradients from the random head corrupting pre-trained weights\nPhase 1: train only the head — let it stabilise before it influences the backbone\nPhase 2: unfreeze everything, train at a much lower learning rate — nudge rather than overwrite\nThis is the exact approach used in the notebook"
   },
   {
-    "objectID": "session-02-cnns-and-transfer-learning.html#convolution-transfer-learning",
-    "href": "session-02-cnns-and-transfer-learning.html#convolution-transfer-learning",
+    "objectID": "session-02-cnns-and-transfer-learning.html#the-bigger-picture",
+    "href": "session-02-cnns-and-transfer-learning.html#the-bigger-picture",
     "title": "Deep Learning Without Math",
-    "section": "Convolution & Transfer Learning",
-    "text": "Convolution & Transfer Learning\n\nThe image problem — Fully connected networks are too large and ignore spatial structure\nConvolution — A small filter slides across the image, detecting one pattern and producing a feature map\nPooling — Downsamples feature maps, reduces computation, and provides translation invariance\nCNN architecture — Convolutional blocks (Conv → ReLU → Pool) build a feature hierarchy automatically\nWhy CNNs fit retinal images — Spatial structure, translation invariance, and parameter efficiency with limited data\nTransfer learning — Start with ImageNet pre-trained weights, general visual features transfer well\nFine-tuning — Keep early layers, retrain late layers; two-phase strategy stabilises training"
+    "section": "The Bigger Picture",
+    "text": "The Bigger Picture\n\nA CNN doesn’t look at every pixel at once — a small filter slides across the image, detecting one pattern at a time, which is why CNNs work so well with limited data.\nThe feature hierarchy — edges, then shapes, then structures — isn’t programmed in; it emerges because that’s the most efficient way to represent the data.\nWeights trained on photographs of cats and dogs already encode a sophisticated understanding of visual structure; adapting them to retinal images takes hours, not weeks."
   },
   {
     "objectID": "session-02-cnns-and-transfer-learning.html#thank-you",
@@ -245,11 +245,11 @@
     "text": "From Pixels to Predictions\n\n\n\n\n\ngraph LR\n  A[\"150,528 pixel values\"] --&gt; B[\"Edges and colour gradients\"] --&gt; C[\"Vessel structure and textures\"] --&gt; D[\"Lesion patterns and global features\"] --&gt; E[\"Disease / No disease\"]\n\n\n\n\n\n\n\nThe network discovers what to look for, features are not hand-engineered\nThe relevant features for retinopathy emerge from training on labelled images\nThis is what makes deep learning powerful on complex, high-dimensional data\n\n\n\nTraditional ML: a domain expert decides what features to extract (vessel diameter, lesion count, etc.)\nDeep learning: the network discovers what to look for automatically\nEmergent features often outperform hand-crafted alternatives\nCore promise: automatic, scalable feature learning directly from raw data"
   },
   {
-    "objectID": "session-01-neural-networks.html#the-intuition-behind-the-math",
-    "href": "session-01-neural-networks.html#the-intuition-behind-the-math",
+    "objectID": "session-01-neural-networks.html#the-short-version",
+    "href": "session-01-neural-networks.html#the-short-version",
     "title": "Deep Learning Without Math",
-    "section": "The Intuition Behind the Math",
-    "text": "The Intuition Behind the Math\n\nNeurons and Weights — A neuron computes a weighted sum of its inputs; weights are the network’s memory.\nLayers and Depth — Neurons form layers; layers form networks; depth enables complex representations.\nActivation functions — ReLU introduces non-linearity, each additional layer adds genuine complexity.\nThe Forward Pass — Data flows from pixels through layers to a prediction, one direction only.\nLoss Functions — Measure how wrong the prediction is; cross-entropy penalises confident errors hardest.\nGradient Descent and Backpropagation — The network learns by repeatedly nudging weights in the loss-reducing direction.\nWhy Depth Matters — Feature hierarchies (edges → shapes → structures) emerge automatically from training."
+    "section": "The Short Version",
+    "text": "The Short Version\n\nThe network’s knowledge lives entirely in its weights — before training it knows nothing; after, the weights encode everything it has learned.\nLearning is just repeated error correction: make a prediction, measure how wrong it was, nudge every weight slightly in the direction that reduces the mistake.\nDepth is what transforms simple edge detectors into disease classifiers — each layer builds on the last, and the hierarchy emerges automatically from training."
   },
   {
     "objectID": "session-01-neural-networks.html#thank-you",
