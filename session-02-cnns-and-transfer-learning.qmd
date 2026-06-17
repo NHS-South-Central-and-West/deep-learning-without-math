@@ -171,7 +171,7 @@ graph LR
 
 ```{mermaid}
 graph LR
-  img["Input:<br/>224x224x3"] --> b1["Conv Block 1:<br/>Conv, ReLU, Pool<br/>→ 112x112"] --> b2["Block 2:<br/>→ 56x56"] --> b3["Block 3:<br/>→ 28x28"] --> b4["Block 4:<br/>→ 14x14"] --> head["FC Head:<br/>Classification"]
+  img["Input<br/>224×224×3"] --> b1["Conv Block 1<br/>→ 112×112"] --> b2["Block 2<br/>→ 56×56"] --> b3["Block 3<br/>→ 28×28"] --> b4["Block 4<br/>→ 14×14"] --> head["FC Head<br/>Classification"]
 ```
 
 - Each block — Convolution → Activation (ReLU) → Max Pooling
@@ -247,7 +247,7 @@ graph LR
 
 ```{mermaid}
 graph LR
-  imagenet["1.2M images:<br/>ImageNet, 1000 categories"] --> pretrained["Pre-trained<br/>ResNet-18"] --> finetune["Fine-tuning on<br/>retinal images"] --> classifier["Retinopathy<br/>classifier"]
+  imagenet["1.2M ImageNet images<br/>1,000 categories"] --> pretrained["Pre-trained<br/>ResNet-18"] --> finetune["Fine-tuning on<br/>retinal images"] --> classifier["Retinopathy<br/>classifier"]
 ```
 
 - ResNet-18 — 18-layer deep network, pre-trained on ImageNet
@@ -281,7 +281,7 @@ graph LR
 
 ```{mermaid}
 graph LR
-  A["Pre-trained ResNet-18<br/>(backbone frozen)"] -->|"Phase 1:<br/>5 epochs, lr = 1e-3"| B["Head stabilises,<br/>backbone unchanged"] -->|"Phase 2:<br/>up to 30 epochs, lr = 1e-4"| C["All layers<br/>fine-tuned"]
+  A["Pre-trained ResNet-18<br/>(backbone frozen)"] -->|"Phase 1: 5 epochs, lr = 1e-3"| B["Head stabilises,<br/>backbone unchanged"] -->|"Phase 2: ≤30 epochs, lr = 1e-4"| C["All layers<br/>fine-tuned"]
 ```
 
 - **Phase 1** — Train only the new classification head — the backbone is frozen
