@@ -4519,7 +4519,7 @@ display:block!important;
 <p></p><figure class><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-  img[&quot;Input:&lt;br/&gt;224x224x3&quot;] --&gt; b1[&quot;Conv Block 1:&lt;br/&gt;Conv, ReLU, Pool&lt;br/&gt;→ 112x112&quot;] --&gt; b2[&quot;Block 2:&lt;br/&gt;→ 56x56&quot;] --&gt; b3[&quot;Block 3:&lt;br/&gt;→ 28x28&quot;] --&gt; b4[&quot;Block 4:&lt;br/&gt;→ 14x14&quot;] --&gt; head[&quot;FC Head:&lt;br/&gt;Classification&quot;]
+  img[&quot;Input&lt;br/&gt;224×224×3&quot;] --&gt; b1[&quot;Conv Block 1&lt;br/&gt;→ 112×112&quot;] --&gt; b2[&quot;Block 2&lt;br/&gt;→ 56×56&quot;] --&gt; b3[&quot;Block 3&lt;br/&gt;→ 28×28&quot;] --&gt; b4[&quot;Block 4&lt;br/&gt;→ 14×14&quot;] --&gt; head[&quot;FC Head&lt;br/&gt;Classification&quot;]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -4720,7 +4720,7 @@ display:block!important;
 <p></p><figure class><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-  imagenet[&quot;1.2M images:&lt;br/&gt;ImageNet, 1000 categories&quot;] --&gt; pretrained[&quot;Pre-trained&lt;br/&gt;ResNet-18&quot;] --&gt; finetune[&quot;Fine-tuning on&lt;br/&gt;retinal images&quot;] --&gt; classifier[&quot;Retinopathy&lt;br/&gt;classifier&quot;]
+  imagenet[&quot;1.2M ImageNet images&lt;br/&gt;1,000 categories&quot;] --&gt; pretrained[&quot;Pre-trained&lt;br/&gt;ResNet-18&quot;] --&gt; finetune[&quot;Fine-tuning on&lt;br/&gt;retinal images&quot;] --&gt; classifier[&quot;Retinopathy&lt;br/&gt;classifier&quot;]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -4815,7 +4815,7 @@ display:block!important;
 <p></p><figure class><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-  A[&quot;Pre-trained ResNet-18&lt;br/&gt;(backbone frozen)&quot;] --&gt;|&quot;Phase 1:&lt;br/&gt;5 epochs, lr = 1e-3&quot;| B[&quot;Head stabilises,&lt;br/&gt;backbone unchanged&quot;] --&gt;|&quot;Phase 2:&lt;br/&gt;up to 30 epochs, lr = 1e-4&quot;| C[&quot;All layers&lt;br/&gt;fine-tuned&quot;]
+  A[&quot;Pre-trained ResNet-18&lt;br/&gt;(backbone frozen)&quot;] --&gt;|&quot;Phase 1: 5 epochs, lr = 1e-3&quot;| B[&quot;Head stabilises,&lt;br/&gt;backbone unchanged&quot;] --&gt;|&quot;Phase 2: ≤30 epochs, lr = 1e-4&quot;| C[&quot;All layers&lt;br/&gt;fine-tuned&quot;]
 </pre>
 </div>
 <p></p></figure><p></p>
